@@ -14,7 +14,6 @@ export const PixelArtCanvas: React.FC<PixelArtCanvasProps> = ({
   alt,
   className = '',
   dimensions = '64x64',
-  tags = [],
   scale = 1,
 }) => {
   const [hasError, setHasError] = useState(false);

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ARTWORKS, ART_CATEGORIES, Artwork, ArtCategory } from '../data/art';
+import { ARTWORKS, ART_CATEGORIES, Artwork } from '../data/art';
 import { GlyphFrame } from './GlyphFrame';
 import { PixelArtCanvas } from './PixelArtCanvas';
 import { ArtInspectorModal } from './ArtInspectorModal';

@@ -4,15 +4,15 @@ import { CharacterSheetView } from '../src/components/CharacterSheetView';
 import { TransmissionView } from '../src/components/TransmissionView';
 
 describe('CharacterSheetView & TransmissionView', () => {
-  it('renders artist profile and specifications in CharacterSheetView', () => {
+  it('renders minimalist About section', () => {
     render(<CharacterSheetView />);
-    expect(screen.getByText(/ARTIST PROFILE \/\/ CHAKEYY/i)).toBeDefined();
-    expect(screen.getByText(/TECHNICAL SPECIFICATIONS/i)).toBeDefined();
+    expect(screen.getByText('About')).toBeDefined();
+    expect(screen.getByText('1-Bit Illustration')).toBeDefined();
   });
 
-  it('renders contact links and inquiry form in TransmissionView', () => {
+  it('renders minimalist Contact section', () => {
     render(<TransmissionView />);
-    expect(screen.getByText(/CONTACT & LINKS/i)).toBeDefined();
-    expect(screen.getByText(/PROJECT & COMMISSION INQUIRY/i)).toBeDefined();
+    expect(screen.getByText('Contact')).toBeDefined();
+    expect(screen.getByText(/github\.com\/Chakeyy/i)).toBeDefined();
   });
 });

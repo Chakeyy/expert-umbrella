@@ -1,21 +1,20 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import App from '../src/App';
+import { ARTWORKS } from '../src/data/art';
 
 describe('Full Integration', () => {
-  it('allows switching between Works, Profile, and Contact views', () => {
+  it('switches cleanly between Work, About, and Contact', () => {
     render(<App />);
-    // Starts on Works view
-    expect(screen.getByText(/SELECTED WORKS \/\/ 1-BIT PIXEL ART ARCHIVE/i)).toBeDefined();
+    // Starts on Work view
+    expect(screen.getByText(ARTWORKS[0].title)).toBeDefined();
 
-    // Switch to Profile
-    const profileTab = screen.getByText('PROFILE');
-    fireEvent.click(profileTab);
-    expect(screen.getByText(/ARTIST PROFILE \/\/ CHAKEYY/i)).toBeDefined();
+    // Switch to About
+    fireEvent.click(screen.getByText('About'));
+    expect(screen.getByText('1-Bit Illustration')).toBeDefined();
 
     // Switch to Contact
-    const contactTab = screen.getByText('CONTACT');
-    fireEvent.click(contactTab);
-    expect(screen.getByText(/CONTACT & LINKS/i)).toBeDefined();
+    fireEvent.click(screen.getByText('Contact'));
+    expect(screen.getByText(/github\.com\/Chakeyy/i)).toBeDefined();
   });
 });

@@ -1,17 +1,19 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import { CodexView } from '../src/components/CodexView';
+import { ARTWORKS } from '../src/data/art';
 
 describe('CodexView', () => {
-  it('renders art entries and selects an item', () => {
+  it('hides descriptions in the grid and only shows them when clicked', () => {
     render(<CodexView />);
-    const buttons = screen.getAllByRole('button');
-    expect(buttons.length).toBeGreaterThan(0);
-  });
+    const firstPiece = ARTWORKS[0];
 
-  it('filters artworks by category', () => {
-    render(<CodexView />);
-    const filterButtons = screen.getAllByRole('button');
-    expect(filterButtons.length).toBeGreaterThan(0);
+    // Title is visible on card, but description is hidden
+    expect(screen.getByText(firstPiece.title)).toBeDefined();
+    expect(screen.queryByText(firstPiece.description)).toBeNull();
+
+    // Clicking the piece opens the modal and reveals the description
+    fireEvent.click(screen.getByText(firstPiece.title));
+    expect(screen.getByText(firstPiece.description)).toBeDefined();
   });
 });

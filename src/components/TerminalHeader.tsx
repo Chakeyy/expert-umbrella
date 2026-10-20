@@ -10,8 +10,6 @@ interface TerminalHeaderProps {
   onPaletteChange: (paletteKey: string) => void;
   inverted: boolean;
   onToggleInvert: () => void;
-  crtEnabled: boolean;
-  onToggleCrt: () => void;
 }
 
 export const TerminalHeader: React.FC<TerminalHeaderProps> = ({
@@ -21,113 +19,76 @@ export const TerminalHeader: React.FC<TerminalHeaderProps> = ({
   onPaletteChange,
   inverted,
   onToggleInvert,
-  crtEnabled,
-  onToggleCrt,
 }) => {
-  const tabs: { key: NavigationTab; label: string; shortcut: string }[] = [
-    { key: 'works', label: 'WORKS', shortcut: '01' },
-    { key: 'profile', label: 'PROFILE', shortcut: '02' },
-    { key: 'contact', label: 'CONTACT', shortcut: '03' },
+  const tabs: { key: NavigationTab; label: string }[] = [
+    { key: 'works', label: 'Work' },
+    { key: 'profile', label: 'About' },
+    { key: 'contact', label: 'Contact' },
   ];
 
+  const paletteKeys = Object.keys(PALETTES);
+  const nextPalette = () => {
+    const idx = paletteKeys.indexOf(currentPalette);
+    const next = paletteKeys[(idx + 1) % paletteKeys.length];
+    onPaletteChange(next);
+  };
+
   return (
-    <header className="border-b border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-fg)] select-none sticky top-0 z-40">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        {/* Top Row: Identity & Display Controls */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-3.5 gap-3 border-b border-[var(--color-border)]">
-          {/* Artist Identity */}
-          <div className="flex items-center space-x-3">
-            {/* 1-Bit Checker Mark */}
-            <div className="w-6 h-6 border border-[var(--color-fg)] grid grid-cols-2 grid-rows-2 shrink-0">
-              <div className="bg-[var(--color-fg)]" />
-              <div className="bg-transparent" />
-              <div className="bg-transparent" />
-              <div className="bg-[var(--color-fg)]" />
-            </div>
-            <div>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm sm:text-base font-bold tracking-[0.2em] uppercase">
-                  CHAKEYY
-                </span>
-                <span className="text-[10px] px-1.5 py-0.5 border border-[var(--color-border)] text-[var(--color-dim)]">
-                  1-BIT STUDIO
-                </span>
-              </div>
-              <p className="text-[10px] text-[var(--color-dim)] tracking-wider uppercase mt-0.5">
-                BINARY PIXEL ART · DITHERING · SPRITES
-              </p>
-            </div>
-          </div>
+    <header className="border-b border-[var(--color-border)] bg-[var(--color-bg)] text-[var(--color-fg)] select-none">
+      <div className="max-w-5xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+        {/* Minimal Brand Mark */}
+        <button
+          onClick={() => onTabChange('works')}
+          className="flex items-center space-x-2.5 text-left focus:outline-none group"
+        >
+          <span className="w-3.5 h-3.5 border border-[var(--color-fg)] grid grid-cols-2 grid-rows-2 shrink-0">
+            <span className="bg-[var(--color-fg)]" />
+            <span />
+            <span />
+            <span className="bg-[var(--color-fg)]" />
+          </span>
+          <span className="text-sm font-bold tracking-[0.18em] uppercase">
+            Chakeyy
+          </span>
+        </button>
 
-          {/* Display Calibration Controls */}
-          <div className="flex flex-wrap items-center gap-2 text-[11px]">
-            {/* Invert Polarity Button */}
-            <button
-              onClick={onToggleInvert}
-              className={`px-2.5 py-1 border tracking-wider uppercase transition-colors ${
-                inverted
-                  ? 'border-[var(--color-fg)] bg-[var(--color-fg)] text-[var(--color-bg)] font-bold'
-                  : 'border-[var(--color-border)] text-[var(--color-fg)] hover:border-[var(--color-fg)]'
-              }`}
-              title="Invert 1-Bit Polarity (Dark / Light)"
-            >
-              ◐ POLARITY
-            </button>
-
-            {/* Scanlines Toggle */}
-            <button
-              onClick={onToggleCrt}
-              className={`px-2.5 py-1 border tracking-wider uppercase transition-colors ${
-                crtEnabled
-                  ? 'border-[var(--color-fg)] bg-[var(--color-fg)] text-[var(--color-bg)] font-bold'
-                  : 'border-[var(--color-border)] text-[var(--color-dim)] hover:border-[var(--color-fg)] hover:text-[var(--color-fg)]'
-              }`}
-              title="Toggle Monitor Scanlines"
-            >
-              CRT: {crtEnabled ? 'ON' : 'OFF'}
-            </button>
-
-            {/* Palette Selector */}
-            <select
-              aria-label="Color Palette"
-              value={currentPalette}
-              onChange={(e) => onPaletteChange(e.target.value)}
-              className="bg-[var(--color-bg)] text-[var(--color-fg)] border border-[var(--color-border)] text-[11px] px-2.5 py-1 outline-none cursor-pointer hover:border-[var(--color-fg)] tracking-wider uppercase"
-            >
-              {Object.entries(PALETTES).map(([key, p]) => (
-                <option key={key} value={key} className="bg-black text-white">
-                  {p.label}
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>
-
-        {/* Bottom Row: Navigation & Dither Strip */}
-        <div className="flex items-center justify-between py-2">
-          <nav className="flex items-center space-x-1 sm:space-x-2">
+        {/* Minimal Navigation & Theme Toggles */}
+        <div className="flex items-center space-x-6">
+          <nav className="flex items-center space-x-5 text-xs tracking-wider">
             {tabs.map((tab) => {
               const isActive = activeTab === tab.key;
               return (
                 <button
                   key={tab.key}
                   onClick={() => onTabChange(tab.key)}
-                  className={`px-3 py-1.5 text-xs tracking-[0.15em] uppercase transition-all flex items-center space-x-2 border ${
+                  className={`py-1 transition-colors ${
                     isActive
-                      ? 'border-[var(--color-fg)] bg-[var(--color-fg)] text-[var(--color-bg)] font-bold'
-                      : 'border-transparent text-[var(--color-dim)] hover:text-[var(--color-fg)] hover:border-[var(--color-border)]'
+                      ? 'text-[var(--color-fg)] font-bold border-b border-[var(--color-fg)]'
+                      : 'text-[var(--color-dim)] hover:text-[var(--color-fg)]'
                   }`}
                 >
-                  <span className="text-[10px] opacity-70">{tab.shortcut}</span>
-                  <span>{tab.label}</span>
+                  {tab.label}
                 </button>
               );
             })}
           </nav>
 
-          <div className="hidden md:flex items-center space-x-3 text-[10px] text-[var(--color-dim)] tracking-widest">
-            <div className="w-24 h-2 dither-dots" />
-            <span>INDEX // 2-TONE MATRIX</span>
+          <div className="flex items-center space-x-2 border-l border-[var(--color-border)] pl-4">
+            <button
+              onClick={onToggleInvert}
+              className="w-7 h-7 flex items-center justify-center border border-[var(--color-border)] hover:border-[var(--color-fg)] text-xs transition-colors"
+              title={inverted ? 'Switch to Dark' : 'Switch to Light'}
+              aria-label="Toggle Light/Dark Mode"
+            >
+              ◐
+            </button>
+            <button
+              onClick={nextPalette}
+              className="px-2 h-7 flex items-center justify-center border border-[var(--color-border)] hover:border-[var(--color-fg)] text-[10px] tracking-wider uppercase text-[var(--color-dim)] hover:text-[var(--color-fg)] transition-colors"
+              title="Cycle 1-Bit Palette"
+            >
+              {PALETTES[currentPalette]?.name || 'ink'}
+            </button>
           </div>
         </div>
       </div>

@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 :root {
-  --color-bg: #060908;
-  --color-fg: #6ee7b7;
-  --color-dim: #065f46;
-  --color-bright: #a7f3d0;
-  --color-border: #10b981;
-  --color-accent: #34d399;
+  --color-bg: #0a0a0c;
+  --color-fg: #f0ede6;
+  --color-dim: #5c5a55;
+  --color-bright: #ffffff;
+  --color-border: #33322e;
+  --color-surface: #121215;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 body {
@@ -16,57 +20,83 @@ body {
   padding: 0;
   background-color: var(--color-bg);
   color: var(--color-fg);
-  font-family: 'Courier New', Courier, monospace;
+  font-family: ui-monospace, 'Cascadia Mono', 'Segoe UI Mono', 'Liberation Mono', Menlo, Monaco, Consolas, monospace;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   min-height: 100vh;
+  transition: background-color 0.12s ease, color 0.12s ease;
 }
 
-/* CRT Scanline & Phosphor Overlay Effect */
-.crt-overlay {
-  position: relative;
-}
-
-.crt-overlay::before {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0; left: 0; bottom: 0; right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
-  z-index: 50;
-  background-size: 100% 3px, 6px 100%;
-  pointer-events: none;
-}
-
-.crt-flicker {
-  animation: flicker 0.15s infinite;
-}
-
-@keyframes flicker {
-  0% { opacity: 0.99; }
-  50% { opacity: 1; }
-  100% { opacity: 0.98; }
-}
-
-/* 1-Bit Crisp Pixel Utility */
+/* Crisp Pixel Rendering */
 .pixel-crisp {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
 }
 
-/* Custom Scrollbar for Retro Terminal */
+/* 1-Bit Checkerboard Dither (50% Bayer pattern) */
+.dither-50 {
+  background-image:
+    linear-gradient(45deg, var(--color-border) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--color-border) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--color-border) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--color-border) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0;
+}
+
+/* Subtle 1-Bit Stipple Pattern (12.5% density) */
+.dither-dots {
+  background-image: radial-gradient(var(--color-border) 1px, transparent 0);
+  background-size: 4px 4px;
+}
+
+/* Diagonal Hatch Pattern */
+.dither-hatch {
+  background-image: repeating-linear-gradient(
+    -45deg,
+    var(--color-border),
+    var(--color-border) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
+
+/* Inspector Pixel Grid Overlay */
+.pixel-grid-overlay {
+  background-size: 8px 8px;
+  background-image:
+    linear-gradient(to right, rgba(128, 128, 128, 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(128, 128, 128, 0.22) 1px, transparent 1px);
+}
+
+/* Subtle CRT Scanline Overlay */
+.crt-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 2px,
+    rgba(0, 0, 0, 0.22) 2px,
+    rgba(0, 0, 0, 0.22) 4px
+  );
+  pointer-events: none;
+  z-index: 60;
+}
+
+/* Custom Minimal Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: var(--color-bg);
-  border-left: 1px solid var(--color-dim);
+  border-left: 1px solid var(--color-border);
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-dim);
-  border: 1px solid var(--color-border);
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-fg);

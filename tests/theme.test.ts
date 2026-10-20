@@ -2,7 +2,8 @@ import { describe, it, expect } from 'vitest';
 import { PALETTES, getPaletteCssVariables } from '../src/theme/palettes';
 
 describe('Palettes', () => {
-  it('contains expected retro themes', () => {
+  it('contains expected 1-bit themes', () => {
+    expect(PALETTES['ink']).toBeDefined();
     expect(PALETTES['monochrome']).toBeDefined();
     expect(PALETTES['phosphor']).toBeDefined();
     expect(PALETTES['amber']).toBeDefined();
@@ -10,14 +11,15 @@ describe('Palettes', () => {
   });
 
   it('generates css variables with fg, bg, and border colors', () => {
-    const vars = getPaletteCssVariables('monochrome');
+    const vars = getPaletteCssVariables('monochrome', false);
     expect(vars['--color-bg']).toBe('#000000');
     expect(vars['--color-fg']).toBe('#ffffff');
-    expect(vars['--color-border']).toBe('#a3a3a3');
+    expect(vars['--color-border']).toBe('#383838');
   });
 
-  it('falls back to default phosphor on unknown palette', () => {
-    const fallback = getPaletteCssVariables('unknown_invalid_key');
-    expect(fallback['--color-bg']).toBe(PALETTES.phosphor.bg);
+  it('inverts polarity when inverted is true', () => {
+    const vars = getPaletteCssVariables('monochrome', true);
+    expect(vars['--color-bg']).toBe('#ffffff');
+    expect(vars['--color-fg']).toBe('#000000');
   });
 });

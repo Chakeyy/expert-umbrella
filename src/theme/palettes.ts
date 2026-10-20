@@ -6,86 +6,94 @@ export interface PaletteTheme {
   dim: string;
   bright: string;
   border: string;
-  accent: string;
+  surface: string;
 }
 
 export const PALETTES: Record<string, PaletteTheme> = {
-  phosphor: {
-    name: 'phosphor',
-    label: 'GREEN PHOSPHOR [QUD]',
-    bg: '#050a06',
-    fg: '#4ade80',
-    dim: '#166534',
-    bright: '#bbf7d0',
-    border: '#22c55e',
-    accent: '#86efac',
-  },
-  amber: {
-    name: 'amber',
-    label: 'AMBER TUBE [SOLAR]',
-    bg: '#0c0702',
-    fg: '#fbbf24',
-    dim: '#78350f',
-    bright: '#fef3c7',
-    border: '#f59e0b',
-    accent: '#fde68a',
+  ink: {
+    name: 'ink',
+    label: 'INK & BONE',
+    bg: '#0b0b0d',
+    fg: '#ece8de',
+    dim: '#6e6a61',
+    bright: '#ffffff',
+    border: '#2c2b28',
+    surface: '#131316',
   },
   monochrome: {
     name: 'monochrome',
-    label: 'HIGH CONTRAST [1-BIT]',
+    label: 'PURE 1-BIT',
     bg: '#000000',
     fg: '#ffffff',
-    dim: '#525252',
+    dim: '#737373',
     bright: '#ffffff',
-    border: '#a3a3a3',
-    accent: '#e5e5e5',
+    border: '#383838',
+    surface: '#0a0a0a',
+  },
+  phosphor: {
+    name: 'phosphor',
+    label: 'PHOSPHOR P31',
+    bg: '#040a06',
+    fg: '#5ce69b',
+    dim: '#1f6e43',
+    bright: '#c2ffe0',
+    border: '#14492c',
+    surface: '#08130c',
+  },
+  amber: {
+    name: 'amber',
+    label: 'AMBER P3',
+    bg: '#0c0702',
+    fg: '#ffb642',
+    dim: '#805315',
+    bright: '#ffe4b5',
+    border: '#4a2e09',
+    surface: '#140c04',
   },
   cybernetic: {
     name: 'cybernetic',
-    label: 'CHROME TERMINAL [BARATHRUM]',
-    bg: '#03080e',
-    fg: '#38bdf8',
-    dim: '#075985',
+    label: 'BLUEPRINT CAD',
+    bg: '#050b14',
+    fg: '#7cc4ff',
+    dim: '#2d5b85',
     bright: '#e0f2fe',
-    border: '#0ea5e9',
-    accent: '#7dd3fc',
-  },
-  gameboy: {
-    name: 'gameboy',
-    label: 'DMG-01 LCD [ANCIENT]',
-    bg: '#0f380f',
-    fg: '#9bbc0f',
-    dim: '#306230',
-    bright: '#8bac0f',
-    border: '#8bac0f',
-    accent: '#9bbc0f',
-  },
-  bloodmoss: {
-    name: 'bloodmoss',
-    label: 'RUST WELLS [CRIMSON]',
-    bg: '#0d0404',
-    fg: '#f87171',
-    dim: '#7f1d1d',
-    bright: '#fecaca',
-    border: '#ef4444',
-    accent: '#fca5a5',
+    border: '#193754',
+    surface: '#091322',
   },
 };
 
-export function getPaletteCssVariables(paletteKey: string): Record<string, string> {
-  const p = PALETTES[paletteKey] || PALETTES.phosphor;
+export function getPaletteCssVariables(
+  paletteKey: string,
+  inverted: boolean = false
+): Record<string, string> {
+  const p = PALETTES[paletteKey] || PALETTES.ink;
+
+  if (inverted) {
+    return {
+      '--color-bg': p.fg,
+      '--color-fg': p.bg,
+      '--color-dim': p.dim,
+      '--color-bright': p.bg,
+      '--color-border': p.dim,
+      '--color-surface': p.bright,
+    };
+  }
+
   return {
     '--color-bg': p.bg,
     '--color-fg': p.fg,
     '--color-dim': p.dim,
     '--color-bright': p.bright,
     '--color-border': p.border,
-    '--color-accent': p.accent,
+    '--color-surface': p.surface,
   };
 }
 
-export function applyPaletteToDocument(paletteKey: string): void {
-  const vars = getPaletteCssVariables(paletteKey);
+export function applyPaletteToDocument(
+  paletteKey: string,
+  inverted: boolean = false
+): void {
+  const vars = getPaletteCssVariables(paletteKey, inverted);
   const root = document.documentElement;
   for (const [key, value] of Object.entries(vars)) {
     root.style.setProperty(key, value);

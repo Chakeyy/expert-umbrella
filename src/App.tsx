@@ -2,42 +2,46 @@ import { useState, useEffect } from 'react';
 import { TerminalHeader, NavigationTab } from './components/TerminalHeader';
 import { StatusBar } from './components/StatusBar';
 import { CodexView } from './components/CodexView';
-import { WandererView } from './components/WandererView';
 import { CharacterSheetView } from './components/CharacterSheetView';
 import { TransmissionView } from './components/TransmissionView';
 import { applyPaletteToDocument, PALETTES } from './theme/palettes';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<NavigationTab>('codex');
-  const [currentPalette, setCurrentPalette] = useState<string>('phosphor');
-  const [crtEnabled, setCrtEnabled] = useState<boolean>(true);
+  const [activeTab, setActiveTab] = useState<NavigationTab>('works');
+  const [currentPalette, setCurrentPalette] = useState<string>('ink');
+  const [inverted, setInverted] = useState<boolean>(false);
+  const [crtEnabled, setCrtEnabled] = useState<boolean>(false);
   const [statusMessage, setStatusMessage] = useState<string>(
-    'ARCHIVE ONLINE // LIVE AND DRINK, TRAVELER.'
+    'VIEWING SELECTED 1-BIT WORKS'
   );
 
   useEffect(() => {
-    applyPaletteToDocument(currentPalette);
-  }, [currentPalette]);
+    applyPaletteToDocument(currentPalette, inverted);
+  }, [currentPalette, inverted]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement;
-      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT')) {
+      if (
+        target &&
+        (target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT')
+      ) {
         return;
       }
 
       if (e.key === '1') {
-        setActiveTab('codex');
-        setStatusMessage('SECTOR: ARCHIVES CODEX // BROWSE 1-BIT RELICS.');
+        setActiveTab('works');
+        setStatusMessage('VIEWING SELECTED 1-BIT WORKS');
       } else if (e.key === '2') {
-        setActiveTab('wanderer');
-        setStatusMessage('SECTOR: OVERWORLD // USE [WASD / ARROWS] TO EXPLORE.');
+        setActiveTab('profile');
+        setStatusMessage('VIEWING ARTIST PROFILE & SPECIFICATIONS');
       } else if (e.key === '3') {
-        setActiveTab('dossier');
-        setStatusMessage('SECTOR: CHARACTER DOSSIER // INSPECTING ARTIFICER STATS.');
-      } else if (e.key === '4') {
-        setActiveTab('transmission');
-        setStatusMessage('SECTOR: TRANSMISSION ARRAY // READY TO ENCODE SIGNAL.');
+        setActiveTab('contact');
+        setStatusMessage('VIEWING CONTACT & COMMISSION INQUIRY');
+      } else if (e.key === 'i' || e.key === 'I') {
+        setInverted((prev) => !prev);
       }
     };
 
@@ -48,10 +52,9 @@ export default function App() {
   const handleTabChange = (tab: NavigationTab) => {
     setActiveTab(tab);
     const messages: Record<NavigationTab, string> = {
-      codex: 'SECTOR: ARCHIVES CODEX // BROWSE 1-BIT RELICS.',
-      wanderer: 'SECTOR: OVERWORLD // USE [WASD / ARROWS] TO EXPLORE.',
-      dossier: 'SECTOR: CHARACTER DOSSIER // INSPECTING ARTIFICER STATS.',
-      transmission: 'SECTOR: TRANSMISSION ARRAY // READY TO ENCODE SIGNAL.',
+      works: 'VIEWING SELECTED 1-BIT WORKS',
+      profile: 'VIEWING ARTIST PROFILE & SPECIFICATIONS',
+      contact: 'VIEWING CONTACT & COMMISSION INQUIRY',
     };
     setStatusMessage(messages[tab]);
   };
@@ -60,13 +63,13 @@ export default function App() {
     setCurrentPalette(paletteKey);
     const p = PALETTES[paletteKey];
     if (p) {
-      setStatusMessage(`DISPLAY MATRIX CALIBRATED TO: ${p.label}`);
+      setStatusMessage(`PALETTE SET TO ${p.label}`);
     }
   };
 
   return (
     <div
-      className={`min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-fg)] font-mono pb-10 ${
+      className={`min-h-screen flex flex-col bg-[var(--color-bg)] text-[var(--color-fg)] pb-12 ${
         crtEnabled ? 'crt-overlay' : ''
       }`}
     >
@@ -75,21 +78,16 @@ export default function App() {
         onTabChange={handleTabChange}
         currentPalette={currentPalette}
         onPaletteChange={handlePaletteChange}
+        inverted={inverted}
+        onToggleInvert={() => setInverted((prev) => !prev)}
         crtEnabled={crtEnabled}
         onToggleCrt={() => setCrtEnabled((prev) => !prev)}
       />
 
-      <main role="main" className="flex-1 max-w-6xl w-full mx-auto p-3 sm:p-5">
-        {activeTab === 'codex' && <CodexView />}
-        {activeTab === 'wanderer' && (
-          <WandererView
-            onInspectArt={(art) =>
-              setStatusMessage(`INSPECTING OVERWORLD RELIC: ${art.title}`)
-            }
-          />
-        )}
-        {activeTab === 'dossier' && <CharacterSheetView />}
-        {activeTab === 'transmission' && <TransmissionView />}
+      <main role="main" className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        {activeTab === 'works' && <CodexView />}
+        {activeTab === 'profile' && <CharacterSheetView />}
+        {activeTab === 'contact' && <TransmissionView />}
       </main>
 
       <StatusBar message={statusMessage} />

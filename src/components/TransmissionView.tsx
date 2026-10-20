@@ -4,68 +4,61 @@ import { GlyphFrame } from './GlyphFrame';
 export const TransmissionView: React.FC = () => {
   const [senderName, setSenderName] = useState('');
   const [messageBody, setMessageBody] = useState('');
-  const [transmitted, setTransmitted] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const channels = [
+  const links = [
     {
-      freq: 'FREQ 88.4 MHz',
-      name: 'GITHUB ARCHIVES',
+      label: 'GITHUB',
       handle: 'github.com/Chakeyy',
       url: 'https://github.com/Chakeyy',
-      desc: 'Source repositories, pixel shaders, and game assets.',
+      desc: 'Code repositories, open-source projects, and pixel art archives.',
     },
     {
-      freq: 'FREQ 92.1 MHz',
-      name: 'ITCH.IO CARAVAN',
+      label: 'ITCH.IO',
       handle: 'chakeyy.itch.io',
       url: 'https://itch.io',
-      desc: 'Playable 1-bit micro-games, sprite packs, and tilesets.',
-    },
-    {
-      freq: 'FREQ 104.7 MHz',
-      name: 'SOCIAL RELAY',
-      handle: '@Chakeyy',
-      url: 'https://github.com/Chakeyy',
-      desc: 'Work-in-progress pixel dailies and dithering studies.',
+      desc: 'Indie game projects, playable prototypes, and 1-bit asset packs.',
     },
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!messageBody.trim()) return;
-    setTransmitted(true);
+    setSubmitted(true);
   };
 
   return (
-    <div className="space-y-4 font-mono select-none">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left: Broadcast Channels */}
-        <div className="lg:col-span-6 space-y-4">
-          <GlyphFrame title="TRANSMISSION ARRAY // BROADCAST FREQUENCIES" badge="SIGNAL: STRONG">
-            <div className="space-y-3">
-              <p className="text-xs text-[var(--color-fg)] leading-relaxed">
-                Tune your receiver to any of the following subspace conduits to inspect additional
-                works, commission custom 1-bit assets, or perform the water ritual.
+    <div className="space-y-6 select-none">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left: Direct Channels */}
+        <div className="lg:col-span-5 space-y-6">
+          <GlyphFrame index="03" title="CONTACT & LINKS" badge="DIRECT">
+            <div className="space-y-4">
+              <p className="text-xs text-[var(--color-fg)] opacity-85 leading-relaxed">
+                Available for freelance 1-bit pixel art commissions, game sprite/tileset
+                production, and collaborative indie projects.
               </p>
 
-              <div className="space-y-2.5 pt-2">
-                {channels.map((ch) => (
+              <div className="space-y-3 pt-1">
+                {links.map((link) => (
                   <a
-                    key={ch.name}
-                    href={ch.url}
+                    key={link.label}
+                    href={link.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block border border-[var(--color-dim)] hover:border-[var(--color-bright)] bg-black/40 p-3 transition-all group"
+                    className="block border border-[var(--color-border)] hover:border-[var(--color-fg)] bg-[var(--color-bg)] p-3.5 transition-colors group"
                   >
-                    <div className="flex items-center justify-between text-[10px] text-[var(--color-dim)] mb-1">
-                      <span>[{ch.freq}]</span>
-                      <span className="group-hover:text-[var(--color-bright)]">OPEN UPLINK ►</span>
+                    <div className="flex items-center justify-between text-[10px] text-[var(--color-dim)] uppercase tracking-widest mb-1">
+                      <span>{link.label}</span>
+                      <span className="group-hover:text-[var(--color-fg)] font-bold">
+                        EXTERNAL LINK ↗
+                      </span>
                     </div>
-                    <div className="text-xs font-bold text-[var(--color-bright)]">
-                      {ch.name} — <span className="underline">{ch.handle}</span>
+                    <div className="text-xs font-bold text-[var(--color-fg)] tracking-wider">
+                      {link.handle}
                     </div>
-                    <div className="text-[11px] text-[var(--color-fg)] opacity-80 mt-1">
-                      {ch.desc}
+                    <div className="text-[11px] text-[var(--color-dim)] mt-1">
+                      {link.desc}
                     </div>
                   </a>
                 ))}
@@ -74,61 +67,61 @@ export const TransmissionView: React.FC = () => {
           </GlyphFrame>
         </div>
 
-        {/* Right: Direct Terminal Message Encoder */}
-        <div className="lg:col-span-6">
-          <GlyphFrame title="ENCODE DIRECT TRANSMISSION // COMMISSIONS">
-            {transmitted ? (
-              <div className="p-6 text-center space-y-3 border border-[var(--color-border)] bg-black/50">
-                <div className="text-lg font-bold text-[var(--color-bright)]">
-                  [ ░▒▓ SIGNAL DISPATCHED ▓▒░ ]
+        {/* Right: Commission Inquiry Brief */}
+        <div className="lg:col-span-7">
+          <GlyphFrame title="PROJECT & COMMISSION INQUIRY">
+            {submitted ? (
+              <div className="p-8 text-center space-y-4 border border-[var(--color-border)] bg-[var(--color-bg)]">
+                <div className="text-sm font-bold tracking-[0.15em] uppercase">
+                  INQUIRY RECORDED
                 </div>
-                <p className="text-xs text-[var(--color-fg)]">
-                  Your packet has been encoded and beamed across the salt flats. Live and drink,{' '}
-                  {senderName || 'traveler'}.
+                <p className="text-xs text-[var(--color-dim)] max-w-md mx-auto">
+                  Thank you{senderName ? `, ${senderName}` : ''}. Your project brief has been
+                  prepared.
                 </p>
                 <button
                   onClick={() => {
-                    setTransmitted(false);
+                    setSubmitted(false);
                     setMessageBody('');
                   }}
-                  className="px-4 py-1.5 border border-[var(--color-border)] text-xs text-[var(--color-bright)] hover:bg-[var(--color-dim)]"
+                  className="px-4 py-2 border border-[var(--color-fg)] text-xs uppercase tracking-wider hover:bg-[var(--color-fg)] hover:text-[var(--color-bg)] transition-colors"
                 >
-                  [SEND ANOTHER PACKET]
+                  NEW INQUIRY
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-3 text-xs">
+              <form onSubmit={handleSubmit} className="space-y-4 text-xs">
                 <div>
-                  <label className="block text-[10px] text-[var(--color-dim)] mb-1">
-                    SENDER CALLSIGN / EMAIL:
+                  <label className="block text-[10px] text-[var(--color-dim)] uppercase tracking-wider mb-1.5">
+                    NAME OR EMAIL
                   </label>
                   <input
                     type="text"
                     value={senderName}
                     onChange={(e) => setSenderName(e.target.value)}
-                    placeholder="e.g. Nomad_77 or traveler@domain.com"
-                    className="w-full bg-black/60 border border-[var(--color-border)] p-2 text-[var(--color-bright)] outline-none focus:border-[var(--color-bright)] font-mono text-xs"
+                    placeholder="name@example.com"
+                    className="w-full bg-[var(--color-bg)] border border-[var(--color-border)] p-2.5 text-[var(--color-fg)] outline-none focus:border-[var(--color-fg)] text-xs"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-[10px] text-[var(--color-dim)] mb-1">
-                    TRANSMISSION PAYLOAD (PROJECT DETAILS / INQUIRY):
+                  <label className="block text-[10px] text-[var(--color-dim)] uppercase tracking-wider mb-1.5">
+                    PROJECT BRIEF (SCOPE, RESOLUTIONS, TIMELINE)
                   </label>
                   <textarea
                     rows={5}
                     value={messageBody}
                     onChange={(e) => setMessageBody(e.target.value)}
-                    placeholder="Describe your game, sprite specifications, resolution, or commission inquiry..."
-                    className="w-full bg-black/60 border border-[var(--color-border)] p-2 text-[var(--color-bright)] outline-none focus:border-[var(--color-bright)] font-mono text-xs resize-none"
+                    placeholder="Describe the sprites, environments, UI assets, or illustrations you need..."
+                    className="w-full bg-[var(--color-bg)] border border-[var(--color-border)] p-2.5 text-[var(--color-fg)] outline-none focus:border-[var(--color-fg)] text-xs resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-2 border border-[var(--color-bright)] bg-[var(--color-dim)] text-[var(--color-bright)] font-bold tracking-wider hover:bg-[var(--color-bright)] hover:text-black transition-colors"
+                  className="w-full py-2.5 border border-[var(--color-fg)] bg-[var(--color-fg)] text-[var(--color-bg)] font-bold tracking-[0.15em] uppercase hover:opacity-90 transition-opacity"
                 >
-                  [TRANSMIT SIGNAL PACKET ►]
+                  SEND INQUIRY →
                 </button>
               </form>
             )}

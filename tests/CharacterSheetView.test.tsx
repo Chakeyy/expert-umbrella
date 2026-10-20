@@ -4,13 +4,15 @@ import { CharacterSheetView } from '../src/components/CharacterSheetView';
 import { TransmissionView } from '../src/components/TransmissionView';
 
 describe('CharacterSheetView & TransmissionView', () => {
-  it('renders artist profile and stats in CharacterSheetView', () => {
+  it('renders artist profile and specifications in CharacterSheetView', () => {
     render(<CharacterSheetView />);
-    expect(screen.getByText(/CHARACTER DOSSIER/i)).toBeDefined();
+    expect(screen.getByText(/ARTIST PROFILE \/\/ CHAKEYY/i)).toBeDefined();
+    expect(screen.getByText(/TECHNICAL SPECIFICATIONS/i)).toBeDefined();
   });
 
-  it('renders contact links and transmission terminal in TransmissionView', () => {
+  it('renders contact links and inquiry form in TransmissionView', () => {
     render(<TransmissionView />);
-    expect(screen.getByText(/TRANSMISSION ARRAY/i)).toBeDefined();
+    expect(screen.getByText(/CONTACT & LINKS/i)).toBeDefined();
+    expect(screen.getByText(/PROJECT & COMMISSION INQUIRY/i)).toBeDefined();
   });
 });

@@ -8,12 +8,13 @@ describe('CodexView', () => {
     render(<CodexView />);
     const firstPiece = ARTWORKS[0];
 
-    // Title is visible on card, but description is hidden
-    expect(screen.getByText(firstPiece.title)).toBeDefined();
+    // Card title is visible in the grid (using getAllByText to avoid ambiguity if duplicated in previews)
+    const titleElements = screen.getAllByText(firstPiece.title);
+    expect(titleElements.length).toBeGreaterThan(0);
     expect(screen.queryByText(firstPiece.description)).toBeNull();
 
     // Clicking the piece opens the modal and reveals the description
-    fireEvent.click(screen.getByText(firstPiece.title));
+    fireEvent.click(titleElements[0]);
     expect(screen.getByText(firstPiece.description)).toBeDefined();
   });
 });

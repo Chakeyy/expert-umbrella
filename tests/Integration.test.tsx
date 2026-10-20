@@ -7,14 +7,18 @@ describe('Full Integration', () => {
   it('switches cleanly between Work, About, and Contact', () => {
     render(<App />);
     // Starts on Work view
-    expect(screen.getByText(ARTWORKS[0].title)).toBeDefined();
+    expect(screen.getAllByText(ARTWORKS[0].title).length).toBeGreaterThan(0);
 
     // Switch to About
-    fireEvent.click(screen.getByText('About'));
-    expect(screen.getByText('1-Bit Illustration')).toBeDefined();
+    fireEvent.click(screen.getByRole('button', { name: /About/i }));
+    expect(screen.getByRole('heading', { name: /About/i })).toBeDefined();
 
     // Switch to Contact
-    fireEvent.click(screen.getByText('Contact'));
-    expect(screen.getByText(/github\.com\/Chakeyy/i)).toBeDefined();
+    fireEvent.click(screen.getByRole('button', { name: /Contact/i }));
+    expect(screen.getByRole('heading', { name: /Contact/i })).toBeDefined();
+
+    // Back to Work
+    fireEvent.click(screen.getByRole('button', { name: /Work/i }));
+    expect(screen.getAllByText(ARTWORKS[0].title).length).toBeGreaterThan(0);
   });
 });

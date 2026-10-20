@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+mkdir -p /data/local/tmp/qud_portfolio/src /data/local/tmp/qud_portfolio/tests
+cp -r src/* /data/local/tmp/qud_portfolio/src/ 2>/dev/null || true
+cp -r tests/* /data/local/tmp/qud_portfolio/tests/ 2>/dev/null || true
+cp vite.config.ts /data/local/tmp/qud_portfolio/ 2>/dev/null || true
+cd /data/local/tmp/qud_portfolio
+./node_modules/.bin/vitest run --pool=forks --poolOptions.forks.singleFork --no-file-parallelism
+npx tsc -b
+npx vite build --base=/expert-umbrella/
+rm -rf /storage/emulated/0/Antigravity/websites/portfolio/dist
+cp -r dist /storage/emulated/0/Antigravity/websites/portfolio/dist
+echo "SUCCESS: Tests & Build Complete"
